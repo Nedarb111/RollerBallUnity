@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI countText;
     public GameObject WinTextObject;
     public AudioSource PickupSounds;
+    public LevelTimer levelTimer;
 
     private Rigidbody rb;
     private int count;
@@ -38,9 +39,10 @@ public class PlayerController : MonoBehaviour
     void SetCountText()
     {
         countText.text = "count" + count.ToString();
-        if(count >= 13)
+        if(count >= 7)
         {
             WinTextObject.SetActive(true);
+            levelTimer.Stop = true;
         }
     }
 
@@ -53,15 +55,18 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Pickup"))
+        if(other.gameObject.CompareTag("cube"))
         {
             other.gameObject.SetActive(false);
+            count = count + 1;
         }
-        other.gameObject.SetActive(false);
-        count = count + 1;
+        if(other.gameObject.CompareTag("sphere"))
+        {
+            levelTimer.currentTime -= 3f;
+        }
 
         SetCountText();
-
+        other.gameObject.SetActive(false);
         PickupSounds.Play();
     }
 }
